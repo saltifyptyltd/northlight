@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>North Light Logo Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        canvas {
+            border: 1px solid #ccc;
+            background: transparent;
+            margin: 20px 0;
+        }
+        .controls {
+            margin: 20px 0;
+        }
+        button {
+            background: #6366f1;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #5855eb;
+        }
+        .preview {
+            background: #333;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>North Light Logo Generator</h1>
+    <p>This will generate a new rectangular logo based on your second attachment.</p>
+    
+    <div class="controls">
+        <button onclick="generateLogo()">Generate Logo</button>
+        <button onclick="downloadLogo()">Download PNG</button>
+    </div>
+    
+    <canvas id="logoCanvas" width="800" height="300"></canvas>
+    
+    <div class="preview">
+        <h3>Preview on dark background:</h3>
+        <canvas id="previewCanvas" width="400" height="150"></canvas>
+    </div>
+
+    <script>
+        let canvas, ctx, previewCanvas, previewCtx;
+        
+        function initCanvas() {
+            canvas = document.getElementById('logoCanvas');
+            ctx = canvas.getContext('2d');
+            previewCanvas = document.getElementById('previewCanvas');
+            previewCtx = previewCanvas.getContext('2d');
+        }
+        
+        function drawStar(ctx, x, y, size, fillColor, strokeColor) {
+            const spikes = 4;
+            const outerRadius = size;
+            const innerRadius = size * 0.4;
+            
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.rotate(Math.PI / 4); // Rotate 45 degrees for diamond orientation
+            
+            ctx.beginPath();
+            for (let i = 0; i < spikes * 2; i++) {
+                const radius = i % 2 === 0 ? outerRadius : innerRadius;
+                const angle = (i * Math.PI) / spikes;
+                const x = Math.cos(angle) * radius;
+                const y = Math.sin(angle) * radius;
+                
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+            ctx.closePath();
+            
+            // Fill the star
+            if (fillColor) {
+                ctx.fillStyle = fillColor;
+                ctx.fill();
+            }
+            
+            // Stroke the star
+            if (strokeColor) {
+                ctx.strokeStyle = strokeColor;
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            }
+            
+            ctx.restore();
+        }
+        
+        function generateLogo() {
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Main logo on main canvas
+            drawMainLogo(ctx, canvas.width, canvas.height);
+            
+            // Preview on dark background
+            previewCtx.fillStyle = '#1f2937';
+            previewCtx.fillRect(0, 0, previewCanvas.width, previewCanvas.height);
+            drawMainLogo(previewCtx, previewCanvas.width, previewCanvas.height);
+        }
+        
+        function drawMainLogo(context, canvasWidth, canvasHeight) {
+            const padding = 40;
+            const logoHeight = canvasHeight - (padding * 2);
+            const starSize = logoHeight * 0.25;
+            const starX = padding + starSize;
+            const starY = canvasHeight / 2;
+            
+            // Draw the star icon in a rounded rectangle
+            const iconSize = starSize * 2.2;
+            const iconX = starX - iconSize / 2;
+            const iconY = starY - iconSize / 2;
+            
+            // Rounded rectangle background for icon
+            context.fillStyle = '#ffffff';
+            context.strokeStyle = '#e5e7eb';
+            context.lineWidth = 2;
+            
+            const radius = 15;
+            context.beginPath();
+            context.roundRect(iconX, iconY, iconSize, iconSize, radius);
+            context.fill();
+            context.stroke();
+            
+            // Draw the star
+            drawStar(context, starX, starY, starSize, '#6366f1', '#4f46e5');
+            
+            // Text positioning
+            const textStartX = starX + iconSize / 2 + 30;
+            const centerY = canvasHeight / 2;
+            
+            // Company name "NORTHLIGHT"
+            context.fillStyle = '#1f2937';
+            context.font = `bold ${logoHeight * 0.2}px Arial, sans-serif`;
+            context.textAlign = 'left';
+            context.textBaseline = 'middle';
+            
+            const mainTextY = centerY - logoHeight * 0.08;
+            context.fillText('NORTHLIGHT', textStartX, mainTextY);
+            
+            // Subtitle "CONSULTING"
+            context.font = `${logoHeight * 0.13}px Arial, sans-serif`;
+            const subtitleY = centerY + logoHeight * 0.06;
+            context.fillText('CONSULTING', textStartX, subtitleY);
+            
+            // "PTY LTD" text
+            context.font = `${logoHeight * 0.08}px Arial, sans-serif`;
+            context.fillStyle = '#6b7280';
+            const ptyLtdY = centerY + logoHeight * 0.16;
+            context.fillText('PTY LTD', textStartX, ptyLtdY);
+        }
+        
+        function downloadLogo() {
+            // Create a new canvas with transparent background for download
+            const downloadCanvas = document.createElement('canvas');
+            downloadCanvas.width = 800;
+            downloadCanvas.height = 300;
+            const downloadCtx = downloadCanvas.getContext('2d');
+            
+            // Draw the logo
+            drawMainLogo(downloadCtx, downloadCanvas.width, downloadCanvas.height);
+            
+            // Download
+            const link = document.createElement('a');
+            link.download = 'northlight-logo-transparent-rectangular.png';
+            link.href = downloadCanvas.toDataURL('image/png');
+            link.click();
+        }
+        
+        // Initialize when page loads
+        window.onload = function() {
+            initCanvas();
+            generateLogo();
+        };
+    </script>
+</body>
+</html>
