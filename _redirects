@@ -1,0 +1,9 @@
+# Cloudflare Pages Redirects
+# Handle SPA routing and force HTTPS
+
+# Force HTTPS redirect
+http://northlight.work/* https://northlight.work/:splat 301!
+http://www.northlight.work/* https://northlight.work/:splat 301!
+
+# Handle any 404s by serving the main page (SPA fallback)
+/* /index.html 200
