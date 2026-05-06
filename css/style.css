@@ -392,7 +392,7 @@ ul { list-style: none; }
     height: 2px;
     background: var(--color-accent);
     transform: scaleX(0);
-    transition: transform 0.3s ease;
+    transition: transform var(--transition);
 }
 
 .service-card:hover {
@@ -523,7 +523,6 @@ ul { list-style: none; }
     display: flex;
     gap: 0.875rem;
     align-items: flex-start;
-    animation: none;
 }
 
 .featured-item-icon {
@@ -937,13 +936,11 @@ ul { list-style: none; }
 }
 
 /* Stagger delays for service cards */
-.services-grid .service-card:nth-child(1) { transition-delay: 0ms; }
 .services-grid .service-card:nth-child(2) { transition-delay: 90ms; }
 .services-grid .service-card:nth-child(3) { transition-delay: 180ms; }
 .services-grid .service-card:nth-child(4) { transition-delay: 270ms; }
 
 /* Stagger delays for process steps */
-.process-steps .process-step:nth-child(1) { transition-delay: 0ms; }
 .process-steps .process-step:nth-child(2) { transition-delay: 90ms; }
 .process-steps .process-step:nth-child(3) { transition-delay: 180ms; }
 

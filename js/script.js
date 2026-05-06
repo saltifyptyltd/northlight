@@ -35,31 +35,27 @@ function initNavigation() {
     const navMenu = document.querySelector('.nav-menu');
     const navLinks = document.querySelectorAll('.nav-link');
 
+    function closeNav() {
+        hamburger.classList.remove('active');
+        navMenu.classList.remove('active');
+        hamburger.setAttribute('aria-expanded', 'false');
+    }
+
     hamburger?.addEventListener('click', () => {
         const isActive = hamburger.classList.toggle('active');
         navMenu.classList.toggle('active');
         hamburger.setAttribute('aria-expanded', String(isActive));
     });
 
-    navLinks.forEach(link => {
-        link.addEventListener('click', () => {
-            hamburger.classList.remove('active');
-            navMenu.classList.remove('active');
-            hamburger.setAttribute('aria-expanded', 'false');
-        });
-    });
+    navLinks.forEach(link => link.addEventListener('click', closeNav));
 
     document.addEventListener('keydown', e => {
-        if (e.key === 'Escape' && navMenu.classList.contains('active')) {
-            hamburger.classList.remove('active');
-            navMenu.classList.remove('active');
-            hamburger.setAttribute('aria-expanded', 'false');
-        }
+        if (e.key === 'Escape' && navMenu.classList.contains('active')) closeNav();
     });
 
     window.addEventListener('scroll', debounce(() => {
         navbar.classList.toggle('scrolled', window.scrollY > 50);
-    }, 10));
+    }, 150));
 }
 
 function initAnimations() {
@@ -85,7 +81,7 @@ function initHNFeed() {
     container.innerHTML = skeletons(6);
 
     const query = 'AI agents devops';
-    const url = `https://hn.algolia.com/api/v1/search?query=${encodeURIComponent(query)}&tags=story&hitsPerPage=12`;
+    const url = `https://hn.algolia.com/api/v1/search?query=${encodeURIComponent(query)}&tags=story&hitsPerPage=6`;
 
     fetch(url)
         .then(r => { if (!r.ok) throw new Error(); return r.json(); })
