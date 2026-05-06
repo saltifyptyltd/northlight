@@ -84,13 +84,13 @@ function initHNFeed() {
 
     container.innerHTML = skeletons(6);
 
-    const query = 'AI automation devops ansible kubernetes agents';
-    const url = `https://hn.algolia.com/api/v1/search?query=${encodeURIComponent(query)}&tags=story&hitsPerPage=9&numericFilters=points%3E30`;
+    const query = 'AI agents devops';
+    const url = `https://hn.algolia.com/api/v1/search?query=${encodeURIComponent(query)}&tags=story&hitsPerPage=12`;
 
     fetch(url)
         .then(r => { if (!r.ok) throw new Error(); return r.json(); })
         .then(data => {
-            const stories = data.hits.filter(h => h.title && h.url).slice(0, 6);
+            const stories = data.hits.filter(h => h.title).slice(0, 6);
             if (stories.length === 0) throw new Error();
             container.innerHTML = stories.map(hnCard).join('');
         })
@@ -101,13 +101,14 @@ function initHNFeed() {
 }
 
 function hnCard(story) {
-    let domain = '';
-    try { domain = new URL(story.url).hostname.replace(/^www\./, ''); } catch (_) { domain = 'news.ycombinator.com'; }
     const hnUrl = `https://news.ycombinator.com/item?id=${story.objectID}`;
+    const href = story.url || hnUrl;
+    let domain = 'news.ycombinator.com';
+    try { domain = new URL(story.url).hostname.replace(/^www\./, ''); } catch (_) {}
     const age = timeAgo(story.created_at);
 
     return `
-        <a class="hn-card" href="${escHtml(story.url)}" target="_blank" rel="noopener noreferrer">
+        <a class="hn-card" href="${escHtml(href)}" target="_blank" rel="noopener noreferrer">
             <div class="hn-card-top">
                 <span class="hn-domain">${escHtml(domain)}</span>
                 <span class="hn-age">${age}</span>
